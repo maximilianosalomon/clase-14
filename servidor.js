@@ -19,8 +19,8 @@ routerCarrito.use(express.json());
 const Contenedor = require("./archivos");
 const Item = require("./item");
 
-// //creo archivo que contiene los productos
-// const archivo = new Contenedor("./productos.txt");
+//creo archivo que contiene los productos
+const archivo = new Contenedor("./productos.txt");
 
 // Productos
 // en archivo txt
@@ -28,13 +28,13 @@ const Item = require("./item");
 // rutas productos-----------------------------------------------------------------------
 
 //todos los productos
-routerProductos.get("/productos", (req, res) => {
-  //   if (productos.length === 0) {
+routerProductos.get("/productos", async (req, res) => {
+  const productos = await archivo.getAll();
+  // if (productos.length == null) {
   //   res.send("Error: no hay productos!");
   // } else {
-  //   res.send(JSON.stringify(productos, null, 10));
   // }
-  res.send("HOLA! GET /productos");
+  res.send(JSON.stringify(productos, null, 10));
 });
 
 //productos por id
