@@ -1,14 +1,5 @@
 class Item {
-  consturtor(
-    // id,
-    timestamp,
-    nombre,
-    descripcion,
-    codigo,
-    imagen,
-    precio,
-    stock
-  ) {
+  constructor(timestamp, nombre, descripcion, codigo, imagen, precio, stock) {
     // this.id = id;
     this.timestamp = timestamp;
     this.nombre = nombre;
@@ -25,3 +16,4 @@ class Item {
   //   const maxId = Math.max(...ids);
   // }
 }
+module.exports = Item;
