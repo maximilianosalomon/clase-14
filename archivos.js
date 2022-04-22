@@ -33,8 +33,9 @@ class Contenedor {
     try {
       // console.log(data);//OK
       const contenido = await this.getAll(); //OK
-      let nuevoId = contenido[contenido.length - 1].id + 1; //OK
-      let nuevoItem = { ...data, id: nuevoId };
+      let nuevoId = contenido[contenido.length - 1].id + 1;
+      const timestamp = new Date();
+      let nuevoItem = { ...data, id: nuevoId, timestamp: timestamp };
       contenido.push(nuevoItem);
       let contenidoString = JSON.stringify(contenido);
       await this.writeFile(contenidoString);
@@ -46,13 +47,12 @@ class Contenedor {
   //leer x id
   async getById(id) {
     try {
-      // const contenido = await this.getAll(); //al usarlo no me ejecuta lo de este metodo
-      // const contenidoParse = JSON.parse(contenido); //al usarlo no me ejecuta lo de este metodo
       const archivo = await fs.promises.readFile(this.fileName, "utf-8");
       const contenidoParse = JSON.parse(archivo);
-      const item = contenidoParse.filter((e) => e.id === id);
+      const item = contenidoParse.filter((prod) => prod.id === id);
       console.log("Obtenido x id!");
-      console.log(item);
+      console.log(JSON.stringify(item));
+      console.log(contenidoParse[id]);
       return item;
     } catch (error) {
       ("No se pudo leer el archivo x id!");
@@ -79,11 +79,10 @@ class Contenedor {
     const items = [];
     await this.writeFile(items);
   }
-  async getRandom (min, max) {
-    const numRandom = await parseInt((Math.random() * (max - min) + min)+1);
+  async getRandom(min, max) {
+    const numRandom = await parseInt(Math.random() * (max - min) + min + 1);
     return numRandom;
-  }                                                   
+  }
 }
-
 
 module.exports = Contenedor;
