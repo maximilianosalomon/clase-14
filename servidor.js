@@ -28,7 +28,7 @@ routerProductos.get("/productos/:id?", async (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {
     const productos = await listaProducto.getAll();
-    res.send(JSON.stringify(productos, null, 10));
+    res.send(JSON.stringify(productos));
   } else {
     const idNum = parseInt(id);
     const productoConsultado = await listaProducto.getById(idNum);
@@ -47,20 +47,20 @@ routerProductos.post("/productos", async (req, res) => {
 // get carros
 routerCarrito.get("/:id?", async (req, res) => {
   const id = parseInt(req.params.id);
-  if (id >= 1) {
+  if (isNaN(id)) {
+    const carritos = await listaCarrito.getAll();
+    res.send(JSON.stringify(carritos));
+  } else {
     const idNum = parseInt(id);
     const carritoConsultado = await listaCarrito.getById(idNum);
     res.send(carritoConsultado);
-  } else {
-    const carritos = await listaCarrito.getAll();
-    res.send(JSON.stringify(carritos));
   }
 });
 
 //post carro
 routerCarrito.post("/", async (req, res) => {
+  // const item = JSON.stringify(req.body);
   const item = req.body;
-  // const carritoNuevo = listaCarrito.writeFile();
   const carritoNuevo = await listaCarrito.save(item);
   res.redirect("/api/carrito");
 });

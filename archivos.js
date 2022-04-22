@@ -22,7 +22,7 @@ class Contenedor {
       const archivo = await fs.promises.readFile(this.fileName, "utf-8");
       const contenido = JSON.parse(archivo);
       console.log("Obtenido!");
-      console.log(contenido);
+      // console.log(contenido);
       return contenido;
     } catch (error) {
       ("No se pudo leer el archivo!");
@@ -31,13 +31,16 @@ class Contenedor {
   //guardar
   async save(data) {
     try {
-      let contenido = await this.getAll(); //OK
+      let contenido = await this.getAll();
+      console.log(contenido);
       if (contenido === undefined) {
+        console.log("SOY UNDEFINEDDD!");
         contenido = [];
-        let nuevoId = 1;
-        // set timestamp
+        const nuevoId = 1;
         const timestamp = new Date();
+        console.log("soy la data: " + data);
         let nuevoItem = { ...data, id: nuevoId, timestamp: timestamp };
+        console.log("soy el new item: " + nuevoItem);
         contenido.push(nuevoItem);
         let contenidoString = JSON.stringify(contenido);
         await this.writeFile(contenidoString);
@@ -45,18 +48,15 @@ class Contenedor {
       } else {
         const ids = contenido.map((item) => item.id);
         const nuevoId = Math.max(...ids);
-        // set timestamp
         const timestamp = new Date();
-        let nuevoItem = { ...data, id: nuevoId, timestamp: timestamp };
+        let nuevoItem = { ...data, id: nuevoId + 1, timestamp: timestamp };
         contenido.push(nuevoItem);
         let contenidoString = JSON.stringify(contenido);
         await this.writeFile(contenidoString);
         return nuevoId;
       }
     } catch (error) {
-      console.log(
-        `No se pudo guardar el archivo ${error} // CONTENIDO ${typeof contenido} `
-      );
+      console.log(`No se pudo guardar el archivo ${error}`);
     }
   }
   //leer x id
