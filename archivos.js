@@ -31,17 +31,32 @@ class Contenedor {
   //guardar
   async save(data) {
     try {
-      // console.log(data);//OK
-      const contenido = await this.getAll(); //OK
-      let nuevoId = contenido[contenido.length - 1].id + 1;
-      const timestamp = new Date();
-      let nuevoItem = { ...data, id: nuevoId, timestamp: timestamp };
-      contenido.push(nuevoItem);
-      let contenidoString = JSON.stringify(contenido);
-      await this.writeFile(contenidoString);
-      return nuevoId;
+      let contenido = await this.getAll(); //OK
+      if (contenido === undefined) {
+        contenido = [];
+        let nuevoId = 1;
+        // set timestamp
+        const timestamp = new Date();
+        let nuevoItem = { ...data, id: nuevoId, timestamp: timestamp };
+        contenido.push(nuevoItem);
+        let contenidoString = JSON.stringify(contenido);
+        await this.writeFile(contenidoString);
+        return nuevoId;
+      } else {
+        const ids = contenido.map((item) => item.id);
+        const nuevoId = Math.max(...ids);
+        // set timestamp
+        const timestamp = new Date();
+        let nuevoItem = { ...data, id: nuevoId, timestamp: timestamp };
+        contenido.push(nuevoItem);
+        let contenidoString = JSON.stringify(contenido);
+        await this.writeFile(contenidoString);
+        return nuevoId;
+      }
     } catch (error) {
-      console.log("No se pudo guardar el archivo", error);
+      console.log(
+        `No se pudo guardar el archivo ${error} // CONTENIDO ${typeof contenido} `
+      );
     }
   }
   //leer x id
