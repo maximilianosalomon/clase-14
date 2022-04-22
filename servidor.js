@@ -11,44 +11,59 @@ app.use(express.urlencoded({ extended: true }));
 const routerProductos = express.Router();
 const routerCarrito = express.Router();
 app.use("/api", routerProductos);
-app.use("/api", routerCarrito);
+app.use("/api/carrito", routerCarrito);
 routerProductos.use(express.json());
 routerCarrito.use(express.json());
 
+// admin
+let admin = true;
+
 //creo archivo que contiene los productos
-const archivo = new Contenedor("./productos.txt");
-// const nuevoItem = new Item("Lapiz", "50", "imagenLapiz");
+const listaProducto = new Contenedor("./productos.txt");
+const listaCarrito = new Contenedor("./carritos.txt");
 
 //rutas productos ---------------------------------------------------------------------------
 //get productos
 routerProductos.get("/productos/:id?", async (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {
-    const productos = await archivo.getAll();
+    const productos = await listaProducto.getAll();
     res.send(JSON.stringify(productos, null, 10));
   } else {
     const idNum = parseInt(id);
-    const productoConsultado = await archivo.getById(idNum);
+    const productoConsultado = await listaProducto.getById(idNum);
     res.send(productoConsultado);
   }
 });
-// // post de producto
-// routerProductos.post("/productos", async (req, res) => {
-//   const item = req.body;
-//   const productoNuevo = await archivo.save(item);
-//   // const ids = productos.map((producto) => producto.id);
-//   // const maxId = Math.max(...ids);
-//   // let newProd = {
-//   //   title: item.title,
-//   //   price: item.price,
-//   //   thumbnail: item.thumbnail,
-//   //   id: maxId + 1,
-//   // };
-//   // productos = [...productos, newProd];
-//   res.redirect("/api/productos");
-// });
+// post de producto
+routerProductos.post("/productos", async (req, res) => {
+  const item = req.body;
+  const productoNuevo = await listaProducto.save(item);
+  res.redirect("/api/productos");
+});
 
 // rutas carro ----------------------------------------------
+
+// get carros
+routerCarrito.get("/:id?", async (req, res) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) {
+    res.send("Ingrese un ID valido");
+  } else {
+    const idNum = parseInt(id);
+    const carritoConsultado = await listaCarrito.getById(idNum);
+    res.send(carritoConsultado);
+    // res.send("los carritos!");
+  }
+});
+
+//post carro
+routerCarrito.post("/", async (req, res) => {
+  const item = JSON.stringify(req.body);
+  // const carritoNuevo = listaCarrito.writeFile();
+  const carritoNuevo = await listaCarrito.writeFile(item);
+  res.redirect("/api/carrito");
+});
 
 // server ---------------------------------------------------
 const PORT = process.env.port || 8080;
