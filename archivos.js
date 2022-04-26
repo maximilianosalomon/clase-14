@@ -32,15 +32,15 @@ class Contenedor {
   async save(data) {
     try {
       let contenido = await this.getAll();
-      console.log(contenido);
+      // console.log(contenido);
       if (contenido === undefined) {
-        console.log("SOY UNDEFINEDDD!");
+        // console.log("SOY UNDEFINEDDD!");
         contenido = [];
         const nuevoId = 1;
         const timestamp = new Date();
-        console.log("soy la data: " + data);
+        // console.log("soy la data: " + data);
         let nuevoItem = { ...data, id: nuevoId, timestamp: timestamp };
-        console.log("soy el new item: " + nuevoItem);
+        // console.log("soy el new item: " + nuevoItem);
         contenido.push(nuevoItem);
         let contenidoString = JSON.stringify(contenido);
         await this.writeFile(contenidoString);
@@ -66,8 +66,8 @@ class Contenedor {
       const contenidoParse = JSON.parse(archivo);
       const item = contenidoParse.filter((prod) => prod.id === id);
       console.log("Obtenido x id!");
-      console.log(JSON.stringify(item));
-      console.log(contenidoParse[id]);
+      // console.log(JSON.stringify(item));
+      // console.log(contenidoParse[id]);
       return item;
     } catch (error) {
       ("No se pudo leer el archivo x id!");
@@ -78,7 +78,7 @@ class Contenedor {
     try {
       const archivo = await fs.promises.readFile(this.fileName, "utf-8");
       const contenidoParse = JSON.parse(archivo);
-      const items = contenidoParse.filter((e) => e.id !== id);
+      const items = contenidoParse.filter((item) => item.id !== id);
       const contenidoNuevo = await fs.promises.writeFile(
         this.fileName,
         JSON.stringify(items)
@@ -98,6 +98,12 @@ class Contenedor {
     const numRandom = await parseInt(Math.random() * (max - min) + min + 1);
     return numRandom;
   }
+  // // agrego al carro
+  // async addToCart(data) {
+  //   const itemObtenido = await this.getById(data);
+  //   console.log("soy el item obtenido1: " + itemObtenido);
+  //   return itemObtenido;
+  // }
 }
 
 module.exports = Contenedor;

@@ -61,8 +61,37 @@ routerCarrito.get("/:id?", async (req, res) => {
 routerCarrito.post("/", async (req, res) => {
   // const item = JSON.stringify(req.body);
   const item = req.body;
-  const carritoNuevo = await listaCarrito.save(item);
+  await listaCarrito.save(item);
+  const nombreCarro = item.nombre + ".txt";
+  console.log(nombreCarro);
+  const nuevoCarro = new Contenedor(nombreCarro);
+  await nuevoCarro.writeFile("");
   res.redirect("/api/carrito");
+  return nuevoCarro;
+});
+
+// prueba carrito POST
+routerCarrito.post("/:id/productos", async (req, res) => {
+  // id del carrito
+  const id = parseInt(req.params.id);
+  // id de producto obtenido del body
+  const producto = req.body;
+  // obtengo el carrito correspondiente
+  const carrito = await listaCarrito.getById(id);
+  // nombre del carrito
+  const nombreCarrito = carrito[0].nombre + ".txt";
+  // creo el carro si no existe
+  const nuevoCarro = new Contenedor(nombreCarrito);
+  await nuevoCarro.writeFile("");
+
+  // console.log(nombreCarrito); OK!
+  // obtengo el producto a agregar al carrito
+  const addItem = await listaProducto.getById(producto.id);
+  // console.log(addItem); OK!
+  // guardo el producto en el carrito
+  const carritoNuevo = await nuevoCarro.save(addItem);
+  console.log(carritoNuevo);
+  res.send("Producto agragdo al carrito!");
 });
 
 // server ---------------------------------------------------
