@@ -1,11 +1,14 @@
-// import
-const Contenedor = require("./archivos");
-const Item = require("./backup/item OLD");
-
 //init
 const express = require("express");
+const cors = require("cors");
+
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
+// import
+const Contenedor = require("./archivos");
+const Item = require("./item");
 
 // router
 const routerProductos = express.Router();
@@ -36,7 +39,7 @@ routerProductos.get("/productos/:id?", async (req, res) => {
   }
 });
 // post de producto
-routerProductos.post("/productos", async (req, res) => {
+routerProductos.post("/api/productos", async (req, res) => {
   const item = req.body;
   const productoNuevo = await listaProducto.save(item);
   res.redirect("/api/productos");
@@ -83,11 +86,8 @@ routerCarrito.post("/:id/productos", async (req, res) => {
   // creo el carro si no existe
   const nuevoCarro = new Contenedor(nombreCarrito);
   await nuevoCarro.writeFile("");
-
-  // console.log(nombreCarrito); OK!
   // obtengo el producto a agregar al carrito
   const addItem = await listaProducto.getById(producto.id);
-  // console.log(addItem); OK!
   // guardo el producto en el carrito
   const carritoNuevo = await nuevoCarro.save(addItem);
   console.log(carritoNuevo);
